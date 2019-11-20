@@ -1,0 +1,130 @@
+<button (click)="showUserForm = !showUserForm" class="btn btn-dark mb-3">Add</button>
+<div class="card card-body mb-3" *ngIf="showUserForm"> 
+        
+    <h2>Add Bath</h2>
+    <!-- ngSubmit works as submit in this case, need to add varaible which is ngForm, video Nr.30 and $event take out from breakets -->
+    <!-- in #userForm is that variable this is way how template driven froms work -->
+   
+    <form #userForm="ngForm"(ngSubmit)="onSubmit(userForm)">
+        <div class="form-group">
+            <label>Bath</label>
+            <!-- Traversia video Nr27- what key  could be and meaning -->
+            <!-- focus= click inside input log on bowser in  console show that is click in - focus-->
+    
+            <!-- <input (focus)="fireEvent($event)" type="text" class="form-control" name="firstName"> -->
+              <!-- To bind data put event -->
+               <!-- in Angular prentese bind components, [(ngModel)]="user.fir" we need both this pretenses-->
+               <!-- we got error beacause we have to put/import it in @NgModule in app.module.ts  -->
+            <input 
+            type="text"
+             [(ngModel)]="user.firstName" 
+             [ngClass]="{'is-invalid':userFirstName.errors && userFirstName.touched}"
+              class="form-control" 
+              name="firstName"
+              
+              #userFirstName="ngModel"
+              required
+              minlength="2">
+            <!-- this is bootstrap UI validation -->
+            <div [hidden]="!userFirstName.errors?.required" class="invalid-feedback">First name required</div>
+            <div [hidden]="!userFirstName.errors?.minlength" class="invalid-feedback">Must be at least 2 characters</div>
+        </div>
+          
+        <div class="form-group">
+            <label>Bath type</label>
+                       <input  type="text"  [(ngModel)]="user.lastName"  class="form-control" name="lastName">
+        </div>
+
+        <div class="form-group">
+            <label> Your Email</label>
+        <input  type="text"  [(ngModel)]="user.email" 
+        [ngClass]="{'is-invalid':userEmail.errors && userEmail.touched}"
+        class="form-control" 
+        name="email"
+        #userEmail="ngModel"
+        required
+        pattern="[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?">
+        <div [hidden]="!userEmail.errors?.required" class="invalid-feedback">Email required</div>
+        <div [hidden]="!userEmail.errors?.pattern" class="invalid-feedback">Email is not valid</div>
+        </div>
+        <!-- <div class="form-group">
+            <label>Age</label>
+            <input type="number"  [(ngModel)]="user.age"  class="form-control" name="age">
+        </div>
+        <div class="form-group">
+            <label>Street Address</label>
+            <input type="text"  [(ngModel)]="user.address.street"  class="form-control" name="street">
+        </div>
+        <div class="form-group">
+            <label>City</label>
+            <input type="text"  [(ngModel)]="user.address.city"  class="form-control" name="city">
+        </div>
+        <div class="form-group">
+            <label>State</label>
+            <input type="text"  [(ngModel)]="user.address.state"  class="form-control" name="state">
+        </div> -->
+        <!-- this classes in tags are bootstrap classes and with this strange names giving a style -->
+         <!-- the way how to check if in field is something written, if yes- then button could click (== '' means equals nothing or empty) -->
+      <button 
+           [disabled]="!userForm.fom.valid" class="btn btn-block mb-3" [ngClass]="currentClasses">Submit</button>
+    </form>
+</div> 
+
+<!-- befor loaded user they dont exist and its ok use ? -->
+<!-- checking is in some user in array with length -->
+<ul class="list-unstyled" *ngIf="loaded && users?.length > 0">
+
+    <!-- use ngFot for loop Array -->
+    <!-- to biding classes using in the end of li element [bootstarp.class] = "name of object wich binds and wich is in Main.ts"-->
+<li class="card card-body mb-2" *ngFor="let user of users" [class.bg-light]="user.isActive" [style.border-color]="user.isActive ? 'blue' : ''">
+
+        <!-- we have add image in User.ts and users.component, but to show in browser we have to creat it here -->
+    <div class="row">
+        <div class="col-sm-4">
+               <img *ngIf="user.image" class="img-fluid" [src]="user.image" alt="">
+    </div>
+    <div class="col-sm-8">
+    </div>
+    </div>
+
+<!-- String interpolation -->
+<!-- we need loop for objects which is in Array in user.componets, there is not enough with String in terpolations {{}} -->
+<!-- user.  means that changed in class and constructor everything is in one property or object=user -->
+
+<h3 [ngStyle]="currentStyles"> {{ user.firstName}} {{user.lastName}}
+
+<!-- <h3>{{ user.firstName}} {{user.lastName}} -->
+
+<!-- <small  *ngIf="user.age && user.address"> -->
+<small>
+<button (click)="user.hide = !user.hide" class="btn btn-dark btn-sm">
+
+<!-- example how to use ngClass, we want to change this class first it is plus when opens than have to be minuss -->
+<i [ngClass]="user.hide ? 'fa fa-plus' : 'fa fa-minus'">
+</i>
+</button>
+</small>
+</h3>
+
+<!-- here we need && because if some user not put age and address than it is ok -->
+<!-- <ul class="list-group" *ngIf="showExtended && user.age && user.address"> -->
+    <!-- want to see only who is not hide , tahts why this ! mark -->
+    <!-- <ul class="list-group" *ngIf="!user.hide && user.age && user.address"> -->
+<ul class="list-group" *ngIf="!user.hide">
+    <!-- <li class="list-group-item">Age: {{ user.age }}</li> -->
+    <li class="list-group-item">Email: {{ user.email }}</li>
+    <!-- <li class="list-group-item"> Address {{ user.address.street }} {{user.address.city }}, {{ user.address.state }} </li> -->
+    <li class="list-group-item">Balance: {{ user.balance | currency:"EUR"}}
+        until {{ .5 | percent }}
+    </li>
+    <li class="list-group-item">Joined: {{ user.registered | date:"mm/dd/yyyy" }}</li>
+    <li class="list-group-item">{{ 5 | number:"2.2" }}</li>
+
+<!-- </div> -->
+<!-- </div> -->
+</ul>
+</li>
+</ul>
+<!-- <ng-template #noUsers><h4>no users found</h4></ng-template> -->
+<h4 *ngIf="users.length == 0 ">No users found</h4>
+<h4 *ngIf="!loaded">Loding Users...</h4>
